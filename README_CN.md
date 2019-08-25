@@ -97,33 +97,33 @@ docker-compose -f docker-compose.yml -f docker-compose.dev.yml updocker-compose.
 version: '2.1'
 services:
   rabbitmq:
-    image: rabbitmq:3-management													# rabbitmq镜像不需要手动构建
+    image: rabbitmq:3-management							# rabbitmq镜像不需要手动构建
     restart: always
     ports:
       - 15672:15672
-    logging:																							# 配置日志服务
+    logging:												# 配置日志服务
       options:
         max-size: "10m"
         max-file: "10"
 
-  config:																									# 配置中心
+  config:													# 配置中心
     environment:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD		# 从环境变量里获取访问配置中心的密码
-    image: sqshq/piggymetrics-config											# 手动构建
+    image: sqshq/piggymetrics-config						# 手动构建
     restart: always
     logging:
       options:
         max-size: "10m"
         max-file: "10"
 
-  registry:																								# 服务注册中心
+  registry:													# 服务注册中心
     environment:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-    image: sqshq/piggymetrics-registry										# 手动构建
+    image: sqshq/piggymetrics-registry						# 手动构建
     restart: always
-    depends_on:																			# 设置依赖的容器为config，并且检查容器健康状态
+    depends_on:												# 设置依赖的容器为config，并且检查容器健康状态
       config:
-        condition: service_healthy												# version3不在支持condition
+        condition: service_healthy							# version3不在支持condition
     ports:
       - 8761:8761
     logging:
@@ -131,10 +131,10 @@ services:
         max-size: "10m"
         max-file: "10"
 
-  gateway:																								# 网关
+  gateway:													# 网关
     environment:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-    image: sqshq/piggymetrics-gateway											# 手动构建
+    image: sqshq/piggymetrics-gateway						# 手动构建
     restart: always
     depends_on:
       config:
@@ -146,14 +146,14 @@ services:
         max-size: "10m"
         max-file: "10"
 
-  auth-service:																							# 认证服务
+  auth-service:												# 认证服务
     environment:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
       NOTIFICATION_SERVICE_PASSWORD: $NOTIFICATION_SERVICE_PASSWORD
       STATISTICS_SERVICE_PASSWORD: $STATISTICS_SERVICE_PASSWORD
       ACCOUNT_SERVICE_PASSWORD: $ACCOUNT_SERVICE_PASSWORD
       MONGODB_PASSWORD: $MONGODB_PASSWORD
-    image: sqshq/piggymetrics-auth-service									# 手动构建
+    image: sqshq/piggymetrics-auth-service					# 手动构建
     restart: always
     depends_on:
       config:
@@ -163,22 +163,22 @@ services:
         max-size: "10m"
         max-file: "10"
 
-  auth-mongodb:																							# 认证服务的数据库
+  auth-mongodb:												# 认证服务的数据库
     environment:
       MONGODB_PASSWORD: $MONGODB_PASSWORD
-    image: sqshq/piggymetrics-mongodb												# 手动构建
+    image: sqshq/piggymetrics-mongodb						# 手动构建
     restart: always
     logging:
       options:
         max-size: "10m"
         max-file: "10"
 
-  account-service:																					# 账户服务
+  account-service:											# 账户服务
     environment:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
       ACCOUNT_SERVICE_PASSWORD: $ACCOUNT_SERVICE_PASSWORD
       MONGODB_PASSWORD: $MONGODB_PASSWORD
-    image: sqshq/piggymetrics-account-service								# 手动构建
+    image: sqshq/piggymetrics-account-service				# 手动构建
     restart: always
     depends_on:
       config:
@@ -188,23 +188,23 @@ services:
         max-size: "10m"
         max-file: "10"
 
-  account-mongodb:																					# 账户服务的数据库
+  account-mongodb:											# 账户服务的数据库
     environment:
       INIT_DUMP: account-service-dump.js
       MONGODB_PASSWORD: $MONGODB_PASSWORD
-    image: sqshq/piggymetrics-mongodb												# 手动构建
+    image: sqshq/piggymetrics-mongodb						# 手动构建
     restart: always
     logging:
       options:
         max-size: "10m"
         max-file: "10"
 
-  statistics-service:																				# 计算服务
+  statistics-service:										# 计算服务
     environment:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
       MONGODB_PASSWORD: $MONGODB_PASSWORD
       STATISTICS_SERVICE_PASSWORD: $STATISTICS_SERVICE_PASSWORD
-    image: sqshq/piggymetrics-statistics-service						# 手动构建
+    image: sqshq/piggymetrics-statistics-service			# 手动构建
     restart: always
     depends_on:
       config:
@@ -214,22 +214,22 @@ services:
         max-size: "10m"
         max-file: "10"
 
-  statistics-mongodb:																			# 计算服务的数据库
+  statistics-mongodb:										# 计算服务的数据库
     environment:
       MONGODB_PASSWORD: $MONGODB_PASSWORD
-    image: sqshq/piggymetrics-mongodb											# 手动构建
+    image: sqshq/piggymetrics-mongodb						# 手动构建
     restart: always
     logging:
       options:
         max-size: "10m"
         max-file: "10"
 
-  notification-service:																		# 通知服务
+  notification-service:										# 通知服务
     environment:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
       MONGODB_PASSWORD: $MONGODB_PASSWORD
       NOTIFICATION_SERVICE_PASSWORD: $NOTIFICATION_SERVICE_PASSWORD
-    image: sqshq/piggymetrics-notification-service				# 手动构建
+    image: sqshq/piggymetrics-notification-service			# 手动构建
     restart: always
     depends_on:
       config:
@@ -239,8 +239,8 @@ services:
         max-size: "10m"
         max-file: "10"
 
-  notification-mongodb:																		# 通知服务的数据库
-    image: sqshq/piggymetrics-mongodb											# 手动构建
+  notification-mongodb:										# 通知服务的数据库
+    image: sqshq/piggymetrics-mongodb						# 手动构建
     restart: always
     environment:
       MONGODB_PASSWORD: $MONGODB_PASSWORD
@@ -249,10 +249,10 @@ services:
         max-size: "10m"
         max-file: "10"
 
-  monitoring:																							# Hystrix Dashboard
+  monitoring:												# Hystrix Dashboard
     environment:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-    image: sqshq/piggymetrics-monitoring									# 手动构建
+    image: sqshq/piggymetrics-monitoring					# 手动构建
     restart: always
     depends_on:
       config:
@@ -264,14 +264,14 @@ services:
         max-size: "10m"
         max-file: "10"
 
-  turbine-stream-service:																	# 集群监控
+  turbine-stream-service:									# 集群监控
     environment:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-    image: sqshq/piggymetrics-turbine-stream-service			# 手动构建
+    image: sqshq/piggymetrics-turbine-stream-service		# 手动构建
     restart: always
     depends_on:
       config:
-        condition: service_healthy
+        condition: service_healthys
     ports:
     - 8989:8989
     logging:
@@ -304,10 +304,10 @@ spring.cloud.config.fail-fast=true  #如果 config client 不能连接上 config
 config 镜像在构建的时候设置了`HEALTHCHECK`, 用来检查容器的健康状况. 从 `docker-compose.yml` 可以看出来, 后续每个容器都依赖 config 容器, 并且都要检查 config 服务的健康状态.
 
 ```dockerfile
-FROM java:8-jre	# 依赖的镜像
+FROM java:8-jre										# 依赖的镜像
 MAINTAINER Alexander Lukyanchikov <sqshq@sqshq.com>
 
-ADD ./target/config.jar /app/	# 添加 jar 包
+ADD ./target/config.jar /app/						# 添加 jar 包
 CMD ["java", "-Xmx200m", "-jar", "/app/config.jar"]	# 容器启动命令
 
 # 设置检查容器健康状况
